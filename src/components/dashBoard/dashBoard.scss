@@ -1,0 +1,67 @@
+.dashboard {
+    padding: 20px;
+
+    .report {
+        .view_report {
+            border-radius: 10px;
+            border: 1px solid #cecece;
+            background-color: #1e767e;
+            color: white;
+            cursor: pointer;
+            margin: 2%;
+            .box-top {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 5px 15px 5px 15px;
+
+                .box-left {
+                    .title {
+                        font-size: 18px;
+                    }
+
+                    .sum {
+                        font-size: 20px;
+                        font-weight: 600;
+                    }
+                }
+
+                .box-right {
+                    i {
+                        font-size: 30px;
+                        opacity: 0.7;
+                    }
+                }
+            }
+
+            .box-bottom {
+                border-top: 1px solid #94d1f4;
+                padding: 5px 15px 5px 15px;
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                .view_detail {
+                    font-size: 17px;
+                }
+
+                i {
+                    font-size: 15px;
+                }
+            }
+        }
+    }
+
+    .charts {
+        display: flex;
+        align-items: self-end;
+        background-color: rgb(255, 255, 255);
+        margin-top: 20px;
+        border-radius: 10px;
+        .chart_item{
+            width: 100%;
+            padding: 20px;
+        }
+    }
+}
