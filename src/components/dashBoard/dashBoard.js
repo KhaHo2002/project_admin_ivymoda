@@ -13,6 +13,7 @@ import './dashBoard.scss';
 
 const DashBoard = (props) => {
     const [lenghtDataProduct, setLengthDataProduct] = useState([]);
+    const [lenghtDataCustomer, setLengthDataCustomert] = useState([]);
     const fetchDataProduct = async () => {
         try {
             let getAllPruduct = await axios.get(`${process.env.REACT_APP_API}/${endPoinProduct.get_all_product}`);
@@ -27,7 +28,24 @@ const DashBoard = (props) => {
         }
     }
 
+    const fetchCountCustomer = async () => {
+        try {
+
+            let countCustomer = await axios.get(`${process.env.REACT_APP_API}/${endPoinProduct.count_customer}`);
+            if (countCustomer.errCode == 0) {
+                console.log(countCustomer);
+                setLengthDataCustomert(countCustomer.data);
+            }
+            else {
+                console.log(countCustomer.message);
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
     useEffect(() => {
+        fetchCountCustomer();
         fetchDataProduct();
     }, []);
 
@@ -56,8 +74,8 @@ const DashBoard = (props) => {
                         <div className="view_report">
                             <div className="box-top">
                                 <div className="box-left">
-                                    <div className="title">Số lượng</div>
-                                    <div className="sum">$<CountUp end={3000} delay={0.1} duration={1} /></div>
+                                    <div className="title">Số lượng khách hàng</div>
+                                    <div className="sum">$<CountUp end={lenghtDataCustomer} delay={0.1} duration={1} /></div>
                                 </div>
                                 <div className="box-right">
                                     <i className="fas fa-calendar-alt"></i>
