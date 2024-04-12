@@ -5,8 +5,8 @@ import CommonUtils from '../../utils/CommonUtils';
 import { useNavigate } from 'react-router-dom';
 import './addProduct.scss';
 
-const AddProduct = (props) => {
-    const [errors, setErrors] = useState({});
+let AddProduct = (props) => {
+    let [errors, setErrors] = useState({});
     const [dataSet, setFormData] = useState({
         name_pro: '',
         type_pro_sex: '',
@@ -19,31 +19,32 @@ const AddProduct = (props) => {
         desprohtml: '',
         statusProduct: ''
     });
-    const [dataColor, setDataColor] = useState([]);
-    const [dataSize, setDataSize] = useState([]);
-    const navigate = useNavigate();
+    let [dataColor, setDataColor] = useState([]);
+    let [dataSize, setDataSize] = useState([]);
+    let [arraySize, setArraySize] = useState([]);
+    let [arrayColor, setArrayColor] = useState([]);
+    let navigate = useNavigate();
 
-    let arrayColor = [];
-    let arraySize = [];
-    const fetchDataSize = async () => {
+
+    let fetchDataSize = async () => {
         try {
-            let getAllColor = await axios.get(`${process.env.REACT_APP_API}/${endPoinProduct.color}`);
-            if (getAllColor.errCode == 0) {
-                setDataColor(getAllColor.data);
+            let getAllSize = await axios.get(`${process.env.REACT_APP_API}/${endPoinProduct.size}`);
+            if (getAllSize.errCode == 0) {
+                setDataSize(getAllSize.data);
             }
             else {
-                console.log(getAllColor.message);
+                console.log(getAllSize.message);
             }
         } catch (error) {
             throw error;
         }
     };
 
-    const fetchDataColor = async () => {
+    let fetchDataColor = async () => {
         try {
-            let getAllSize = await axios.get(`${process.env.REACT_APP_API}/${endPoinProduct.size}`);
+            let getAllSize = await axios.get(`${process.env.REACT_APP_API}/${endPoinProduct.color}`);
             if (getAllSize.errCode == 0) {
-                setDataSize(getAllSize.data);
+                setDataColor(getAllSize.data);
             }
             else {
                 console.log(getAllSize.message);
@@ -59,62 +60,85 @@ const AddProduct = (props) => {
     }, []);
 
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
+    let handleChange = (e) => {
+        let { name, value } = e.target;
         setFormData((prevFormData) => ({
             ...prevFormData,
             [name]: value,
         }));
     };
 
-    const getColorToConvert = (color) => {
-        color.isChecked = !color.isChecked;
-        if (color.isChecked === true) {
+
+    // let getColorToConvert = (color) => {
+    //     console.log("1", color);
+    //     // return;
+    //     let newArrayColor = JSON.parse(JSON.stringify(arrayColor)); // Tạo một bản sao sâu hơn của mảng arrayColor
+    //     console.log(newArrayColor,"??");
+    //     let index = newArrayColor.findIndex(item => item.idcolor === color.idcolor);
+    //     if (index === -1) {
+    //         console.log("2", color);
+    //         newArrayColor.push({...color, isChecked: false}); // Thêm color mới với isChecked là false
+    //     } else {
+    //         newArrayColor[index].isChecked = !newArrayColor[index].isChecked;
+    //         if (!newArrayColor[index].isChecked) {
+    //             newArrayColor.splice(index, 1);
+    //         }
+    //     }
+    //     setArrayColor(newArrayColor);
+    //     setFormData(prevFormData => ({
+    //         ...prevFormData,
+    //         color: newArrayColor
+    //     }));
+    // };
+
+
+    let getColorToConvert = (color) => {
+        let newArrayColor = [...arrayColor];
+        const index = newArrayColor.findIndex(item => item.idcolor == color.idcolor);
+        if (index === -1) {
+            color.isChecked = !color.isChecked;
             let convertColor = {
                 name_c: color.name_c,
                 idcolor: color.idcolor,
-                isChecked: 1,
+                isChecked: false,
                 code_color: color.code_color
-            };
-            arrayColor.push(convertColor);
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                color: arrayColor
-            }));
-        } else {
-            for (let i = 0; i < arrayColor.length; i++) {
-                if (arrayColor[i].idcolor === color.idcolor) {
-                    arrayColor.splice(i, 1); // Remove the element at index i
-                    break; // Exit the loop once the element is removed
-                }
             }
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                color: arrayColor
-            }));
+            newArrayColor.push(convertColor);
+
         }
+        else {
+            newArrayColor[index].isChecked = !newArrayColor[index].isChecked;
+            if (newArrayColor[index].isChecked) {
+                color.isChecked = !color.isChecked;
+                newArrayColor.splice(index, 1);
+            }
+        }
+        setArrayColor(newArrayColor);
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            color: newArrayColor
+        }));
     };
 
-    const getSizeToConvert = (size) => {
-        size.isChecked = !size.isChecked;
-        if (size.isChecked) {
-            arraySize.push(size);
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                size: arraySize
-            }));
+
+
+    let getSizeToConvert = (size) => {
+        let newArraySize = [...arraySize];
+        let index = newArraySize.findIndex(item => item.idsize === size.idsize);
+        if (index === -1) {
+            size.isChecked = true;
+            newArraySize.push(size);
         } else {
-            for (let i = 0; i < arraySize.length; i++) {
-                if (arraySize[i].idsize === size.idsize) {
-                    arraySize.splice(i, 1); // Remove the element at index i
-                    break; // Exit the loop once the element is removed
-                }
+            newArraySize[index].isChecked = !newArraySize[index].isChecked;
+            if (!newArraySize[index].isChecked) {
+                newArraySize.splice(index, 1);
             }
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                size: arraySize
-            }));
         }
+        setArraySize(newArraySize);
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            size: newArraySize
+        }));
     };
 
     let handleImage = async (event) => {
@@ -130,7 +154,7 @@ const AddProduct = (props) => {
     }
 
 
-    const validateForm = (dataSet) => {
+    let validateForm = (dataSet) => {
         let errors = {};
         if (!dataSet.name_pro) {
             errors.name_pro = 'Hãy nhập tên sản phẩm!';
@@ -167,7 +191,7 @@ const AddProduct = (props) => {
     };
 
     let addProduct = async () => {
-        const validationErrors = validateForm(dataSet);
+        let validationErrors = validateForm(dataSet);
         if (Object.keys(validationErrors).length === 0) {
             try {
                 let imageUpClound = await axios.post(`${process.env.REACT_APP_API}/${endPoinProduct.image_clound}`, { data: dataSet.image_pro });
@@ -177,7 +201,7 @@ const AddProduct = (props) => {
                         type_pro_sex: dataSet.type_pro_sex,
                         image_pro: imageUpClound.data.url,
                         price: dataSet.price,
-                        sale: dataSet.price,
+                        sale: dataSet.sale,
                         quantity: dataSet.quantity,
                         desprohtml: dataSet.desprohtml,
                         status_pro: dataSet.statusProduct,
@@ -205,7 +229,9 @@ const AddProduct = (props) => {
 
     }
     return (
+
         <>
+
             <div className="input_infor_pro row">
                 <p className="title">Add product</p>
                 <div className="input_item col-lg-3">
@@ -273,9 +299,9 @@ const AddProduct = (props) => {
                     {errors.size && <span className='error_validate'>{errors.size}</span>}
                     <div className="list_size_pro">
                         {dataSize.map((item, index) => (
-                            <div >
+                            <div key={index}>
                                 <button type="button"
-                                    className="size_but" name="size" value={dataSet.size} onClick={() => getSizeToConvert(item)}>{item.name_s}</button>
+                                    className={`size_but ${item.isChecked ? 'checked' : ''}`} name="size" value={dataSet.size} onClick={() => getSizeToConvert(item)}>{item.name_s}</button>
                             </div>
                         ))}
                     </div >
@@ -286,7 +312,7 @@ const AddProduct = (props) => {
                     {errors.color && <span className='error_validate'>{errors.color}</span>}
                     <div className="list_color">
                         {dataColor.map((item, index) => (
-                            <span className="color_but" style={{ backgroundColor: item.code_color }} name="color" value={dataSet.color} onClick={() => getColorToConvert(item)}></span>
+                            <span key={index} className={`color_but ${item.isChecked ? 'checked' : ''}`} style={{ backgroundColor: item.code_color }} name="color" value={dataSet.color} onClick={() => getColorToConvert(item)}></span>
                         ))}
                     </div >
                 </div >

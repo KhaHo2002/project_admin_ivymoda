@@ -33,7 +33,6 @@ const DashBoard = (props) => {
 
             let countCustomer = await axios.get(`${process.env.REACT_APP_API}/${endPoinProduct.count_customer}`);
             if (countCustomer.errCode == 0) {
-                console.log(countCustomer);
                 setLengthDataCustomert(countCustomer.data);
             }
             else {
@@ -61,7 +60,7 @@ const DashBoard = (props) => {
                                     <div className="sum"><CountUp end={lenghtDataProduct.length} delay={0.1} duration={1} /></div>
                                 </div>
                                 <div className="box-right">
-                                    <i class="fas fa-gift"></i>
+                                    <i className="fas fa-gift"></i>
                                 </div>
                             </div>
                             <div className="box-bottom">
