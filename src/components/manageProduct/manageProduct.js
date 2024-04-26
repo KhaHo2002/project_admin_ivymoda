@@ -59,7 +59,7 @@ const ManagerProduct = (props) => {
     useEffect(() => {
         fetchDataProduct();
     }, []);
-    
+
     let id = 0;
     function createData(Name, Price, Status, Image, idPro, action) {
         id += 1;
@@ -103,7 +103,7 @@ const ManagerProduct = (props) => {
 
                                 <TableCell numeric>{row.Name}</TableCell>
                                 <TableCell numeric>{row.Price}</TableCell>
-                                <TableCell numeric>{row.Status}</TableCell>
+                                <TableCell numeric>{row.Status == 'business' ? <span className='business'>Business</span> : <span className='inventory'>Inventory</span>}</TableCell>
                                 <TableCell className={classes.imageCell}>
                                     <img src={row.Image} alt={row.Image} className={classes.image} />
                                 </TableCell>
@@ -114,7 +114,7 @@ const ManagerProduct = (props) => {
                                     >
                                         <button type="button" className='edit'><i className="fa-solid fa-edit" ></i></button>
                                     </NavLink>
-                                    <button type="button" className='delete'><i className="fa-solid fa-times" onClick={() => handleDelatePro(row.idPro)}></i></button>
+                                    <button type="button" className='delete' onClick={() => handleDelatePro(row.idPro)}><i className="fa-solid fa-times" ></i></button>
                                 </TableCell>
                             </TableRow>
                         ))}

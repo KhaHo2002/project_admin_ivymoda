@@ -30,8 +30,8 @@ const UpdateProduct = (props) => {
     });
     const [dataColor, setDataColor] = useState([]);
     const [dataSize, setDataSize] = useState([]);
-    let arrayColor = [];
-    let arraySize = [];
+    let [arraySize, setArraySize] = useState([]);
+    let [arrayColor, setArrayColor] = useState([]);
 
     useEffect(() => {
         fetchProductDetail();
@@ -97,7 +97,7 @@ const UpdateProduct = (props) => {
         if (!dataSet.image_pro) {
             errors.image_pro = 'Hãy chọn ảnh cho sản phẩm!';
         }
-        if (!dataSet.sale) {
+        if (dataSet.sale < 0) {
             errors.sale = 'Hãy nhập sale cho sản phẩm!';
         }
         if (!dataSet.quantity) {
@@ -127,55 +127,104 @@ const UpdateProduct = (props) => {
         }));
     };
 
-    const getColorToConvert = (color) => {
-        color.isChecked = !color.isChecked;
-        if (color.isChecked === true) {
+    // const getColorToConvert = (color) => {
+    //     color.isChecked = !color.isChecked;
+    //     if (color.isChecked === true) {
+    //         let convertColor = {
+    //             name_c: color.name_c,
+    //             idcolor: color.idcolor,
+    //             isChecked: 1,
+    //             code_color: color.code_color
+    //         };
+    //         arrayColor.push(convertColor);
+    //         setFormData((prevFormData) => ({
+    //             ...prevFormData,
+    //             color: arrayColor
+    //         }));
+    //     } else {
+    //         for (let i = 0; i < arrayColor.length; i++) {
+    //             if (arrayColor[i].idcolor === color.idcolor) {
+    //                 arrayColor.splice(i, 1); // Remove the element at index i
+    //                 break; // Exit the loop once the element is removed
+    //             }
+    //         }
+    //         setFormData((prevFormData) => ({
+    //             ...prevFormData,
+    //             color: arrayColor
+    //         }));
+    //     }
+    // };
+
+    // const getSizeToConvert = (size) => {
+    //     size.isChecked = !size.isChecked;
+    //     if (size.isChecked) {
+    //         arraySize.push(size);
+    //         setFormData((prevFormData) => ({
+    //             ...prevFormData,
+    //             size: arraySize
+    //         }));
+    //     } else {
+    //         for (let i = 0; i < arraySize.length; i++) {
+    //             if (arraySize[i].idsize === size.idsize) {
+    //                 arraySize.splice(i, 1); // Remove the element at index i
+    //                 break; // Exit the loop once the element is removed
+    //             }
+    //         }
+    //         setFormData((prevFormData) => ({
+    //             ...prevFormData,
+    //             size: arraySize
+    //         }));
+    //     }
+    // };
+
+    let getColorToConvert = (color) => {
+        let newArrayColor = [...arrayColor];
+        const index = newArrayColor.findIndex(item => item.idcolor == color.idcolor);
+        if (index === -1) {
+            color.isChecked = !color.isChecked;
             let convertColor = {
                 name_c: color.name_c,
                 idcolor: color.idcolor,
-                isChecked: 1,
+                isChecked: false,
                 code_color: color.code_color
-            };
-            arrayColor.push(convertColor);
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                color: arrayColor
-            }));
-        } else {
-            for (let i = 0; i < arrayColor.length; i++) {
-                if (arrayColor[i].idcolor === color.idcolor) {
-                    arrayColor.splice(i, 1); // Remove the element at index i
-                    break; // Exit the loop once the element is removed
-                }
             }
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                color: arrayColor
-            }));
+            newArrayColor.push(convertColor);
+
         }
+        else {
+            newArrayColor[index].isChecked = !newArrayColor[index].isChecked;
+            if (newArrayColor[index].isChecked) {
+                color.isChecked = !color.isChecked;
+                newArrayColor.splice(index, 1);
+            }
+        }
+        setArrayColor(newArrayColor);
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            color: newArrayColor
+        }));
     };
 
-    const getSizeToConvert = (size) => {
-        size.isChecked = !size.isChecked;
-        if (size.isChecked) {
-            arraySize.push(size);
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                size: arraySize
-            }));
+    let getSizeToConvert = (size) => {
+        let newArraySize = [...arraySize];
+        let index = newArraySize.findIndex(item => item.idsize === size.idsize);
+        if (index === -1) {
+            size.isChecked = true;
+            newArraySize.push(size);
         } else {
-            for (let i = 0; i < arraySize.length; i++) {
-                if (arraySize[i].idsize === size.idsize) {
-                    arraySize.splice(i, 1); // Remove the element at index i
-                    break; // Exit the loop once the element is removed
-                }
+            newArraySize[index].isChecked = !newArraySize[index].isChecked;
+            if (!newArraySize[index].isChecked) {
+                newArraySize.splice(index, 1);
             }
-            setFormData((prevFormData) => ({
-                ...prevFormData,
-                size: arraySize
-            }));
         }
+        setArraySize(newArraySize);
+        setFormData(prevFormData => ({
+            ...prevFormData,
+            size: newArraySize
+        }));
     };
+
+
 
     let handleImage = async (event) => {
         let fileImage = event.target.files;
@@ -201,7 +250,7 @@ const UpdateProduct = (props) => {
                         type_pro_sex: dataSet.type_pro_sex,
                         image_pro: imageUpClound.data.url,
                         price: dataSet.price,
-                        sale: dataSet.price,
+                        sale: dataSet.sale,
                         quantity: dataSet.quantity,
                         desprohtml: dataSet.desprohtml,
                         status_pro: dataSet.statusProduct,
@@ -231,7 +280,7 @@ const UpdateProduct = (props) => {
     return (
         <>
             <div className="input_infor_pro row">
-                <p className="title">Add product</p>
+                <p className="title">Sửa sản phẩm</p>
                 <div className="input_item col-lg-3">
 
                     <i className="fas fa-signature"></i>&nbsp;<span>Tên sản phẩm :<br /> </span>{errors.name_pro && <span className='error_validate'>{errors.name_pro}</span>}
@@ -299,7 +348,7 @@ const UpdateProduct = (props) => {
                         {dataSize.map((item, index) => (
                             <div >
                                 <button type="button"
-                                    className="size_but" name="size" value={dataSet.size} onClick={() => getSizeToConvert(item)}>{item.name_s}</button>
+                                    className={`size_but ${item.isChecked ? 'checked' : ''}`} name="size" value={dataSet.size} onClick={() => getSizeToConvert(item)}>{item.name_s}</button>
                             </div>
                         ))}
                     </div >
@@ -310,7 +359,7 @@ const UpdateProduct = (props) => {
                     {errors.color && <span className='error_validate'>{errors.color}</span>}
                     <div className="list_color">
                         {dataColor.map((item, index) => (
-                            <span className="color_but" style={{ backgroundColor: item.code_color }} name="color" value={dataSet.color} onClick={() => getColorToConvert(item)}></span>
+                            <span key={index} className={`color_but ${item.isChecked ? 'checked' : ''}`} style={{ backgroundColor: item.code_color }} name="color" value={dataSet.color} onClick={() => getColorToConvert(item)}></span>
                         ))}
                     </div >
                 </div >

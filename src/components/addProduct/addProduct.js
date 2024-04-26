@@ -68,30 +68,6 @@ let AddProduct = (props) => {
         }));
     };
 
-
-    // let getColorToConvert = (color) => {
-    //     console.log("1", color);
-    //     // return;
-    //     let newArrayColor = JSON.parse(JSON.stringify(arrayColor)); // Tạo một bản sao sâu hơn của mảng arrayColor
-    //     console.log(newArrayColor,"??");
-    //     let index = newArrayColor.findIndex(item => item.idcolor === color.idcolor);
-    //     if (index === -1) {
-    //         console.log("2", color);
-    //         newArrayColor.push({...color, isChecked: false}); // Thêm color mới với isChecked là false
-    //     } else {
-    //         newArrayColor[index].isChecked = !newArrayColor[index].isChecked;
-    //         if (!newArrayColor[index].isChecked) {
-    //             newArrayColor.splice(index, 1);
-    //         }
-    //     }
-    //     setArrayColor(newArrayColor);
-    //     setFormData(prevFormData => ({
-    //         ...prevFormData,
-    //         color: newArrayColor
-    //     }));
-    // };
-
-
     let getColorToConvert = (color) => {
         let newArrayColor = [...arrayColor];
         const index = newArrayColor.findIndex(item => item.idcolor == color.idcolor);
@@ -168,14 +144,13 @@ let AddProduct = (props) => {
         if (!dataSet.image_pro) {
             errors.image_pro = 'Hãy chọn ảnh cho sản phẩm!';
         }
-        if (!dataSet.sale) {
+        if (dataSet.sale<0) {
             errors.sale = 'Hãy nhập sale cho sản phẩm!';
         }
-        if (!dataSet.quantity) {
+        if (dataSet.quantity<0) {
             errors.quantity = 'Hãy nhập lượng không cho sản phẩm!';
         }
         if (dataSet.size.length == 0) {
-            console.log(arraySize);
             errors.size = 'Hãy chọn size cho sản phẩm!';
         }
         if (dataSet.color.length == 0) {
@@ -233,7 +208,7 @@ let AddProduct = (props) => {
         <>
 
             <div className="input_infor_pro row">
-                <p className="title">Add product</p>
+                <p className="title">Thêm mới sản phẩm</p>
                 <div className="input_item col-lg-3">
 
                     <i className="fas fa-signature"></i>&nbsp;<span>Tên sản phẩm :<br /> </span>{errors.name_pro != '' && <span className='error_validate'>{errors.name_pro}</span>}

@@ -8,5 +8,6 @@ export const endPoinProduct = {
     get_detail_product: 'get-product-detail',
     delete_product: 'delete-product',
     update_product: 'update-product',
-    order_customer: 'order-customer'
+    order_customer: 'order-customer',
+    get_all_order_customer:'get-all-order-customer'
 };
